@@ -89,9 +89,9 @@ async function loopActorRun(placements: ILookupPlacement[], isBulk: boolean) {
     }
 }
 
-async function startActorRun(placement: ILookupPlacement, isBulk: boolean) {
+async function startActorRun(placement: ILookupPlacement, isIFU: boolean) {
     const temp = {
-        isBulkIFUScreenshots: isBulk,
+        isIFU,
         userID,
         placementInfo: {
             ...placement,

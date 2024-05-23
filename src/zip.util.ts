@@ -10,7 +10,7 @@ export async function getZip(keyValueStore: KeyValueStore, maxFileInZip: number)
 
     let archive = archiver('zip');
 
-    let output = new PassThrough();
+    let output = new PassThrough() as PassThrough;
     archive.pipe(output);
 
     setArchiveTimeout(archive, 5 * 60 * 1000); // 5 minutes
@@ -64,20 +64,22 @@ async function createZipOutput(output: any, archiveIndex: number = 0) {
     }
 
     const zippedBuffer = Buffer.concat(buffer);
-    logZipFileSize(zippedBuffer);
+    if (logZipFileSize(zippedBuffer)) {
+        const outputFilename = `screenshots${archiveIndex}.zip`;
+        log.info(`Output filename: ${outputFilename} `);
 
-    const outputFilename = `screenshots${archiveIndex}.zip`;
-    log.info(`Output filename: ${outputFilename} `);
+        await Actor.setValue(outputFilename, zippedBuffer, {
+            contentType: `application / zip`,
+        });
 
-    await Actor.setValue(outputFilename, zippedBuffer, {
-        contentType: `application / zip`,
-    });
+        const screenshotUrl = `https://api.apify.com/v2/key-value-stores/${ACTOR_DEFAULT_KEY_VALUE_STORE_ID}/records/${outputFilename}?disableRedirect=true`;
+        log.info(`Screenshot saved: ${screenshotUrl}`);
 
-    const screenshotUrl = `https://api.apify.com/v2/key-value-stores/${ACTOR_DEFAULT_KEY_VALUE_STORE_ID}/records/${outputFilename}?disableRedirect=true`;
-    log.info(`Screenshot saved: ${screenshotUrl}`);
-
-    await Actor.pushData({ screenshotUrl });
-    log.info('screenshot zip url saved in default dataset');
+        await Actor.pushData({ screenshotUrl });
+        log.info('screenshot zip url saved in default dataset');
+    } else {
+        throw new Error('Zip file size is less than 0 MB');
+    }
 }
 
 function setArchiveTimeout(archive: archiver.Archiver, timeout: number) {
@@ -111,4 +113,5 @@ function logZipFileSize(buffer: Buffer) {
     const zippedSizeInBytes = buffer.byteLength;
     const zippedSizeInMB = zippedSizeInBytes / (1024 * 1024);
     log.info(`Zip file size: ${zippedSizeInMB.toFixed(3)} MB`);
+    return !(zippedSizeInMB < 1);
 }

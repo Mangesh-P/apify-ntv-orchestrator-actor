@@ -21,6 +21,12 @@
             "description": "The ID of the user",
             "editor": "number"
         },
+        "adID": {
+            "title": "adID",
+            "type": "integer",
+            "description": "The ID of the user (for bulk IFU screenshots)",
+            "editor": "number"
+        },
         "targetActorRunOptions": {
             "title": "Actor Run Options",
             "type": "object",
