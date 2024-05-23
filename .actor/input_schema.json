@@ -1,0 +1,44 @@
+{
+    "title": "Orchestrator Actor Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "maxFileInZip": {
+            "title": "Max no of files in a zip.",
+            "type": "integer",
+            "description": "Max no of files in a zip. There can be multiple zips.",
+            "default": 0
+        },
+        "parallelRunsCount": {
+            "title": "Parallel Actor runs count",
+            "type": "integer",
+            "description": "Number of parallel runs of the Actor.",
+            "default": 1
+        },
+        "userID": {
+            "title": "userID",
+            "type": "integer",
+            "description": "The ID of the user",
+            "editor": "number"
+        },
+        "targetActorRunOptions": {
+            "title": "Actor Run Options",
+            "type": "object",
+            "description": "Options for the Actor run",
+            "editor": "json",
+            "prefill": {}
+        },
+        "placementsInfo": {
+            "title": "placementsInfo",
+            "type": "array",
+            "editor": "json",
+            "description": "Information about the placements"
+        },
+        "isBulkIFUScreenshots": {
+            "title": "isBulkIFUScreenshots",
+            "type": "boolean",
+            "description": "Whether to take screenshots of all IFU lightboxes",
+            "default": false
+        }
+    }
+}
