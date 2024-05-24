@@ -105,18 +105,17 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
             keyValueStoreId: keyValueStore.id,
         }, targetActorRunOptions);
     } else if (placement.type === 'clp') {
-        // const temp = {
-        //     userID,
-        //     placementInfo: {
-        //         ...placement,
-        //     },
-        // };
-        // run = Actor.start(TARGET_CLP_ACTOR_ID, {
-        //     ...temp,
-        //     datasetId: dataset.id,
-        //     keyValueStoreId: keyValueStore.id,
-        // }, targetActorRunOptions);
-
+        const temp = {
+            userID,
+            placementInfo: {
+                ...placement,
+            },
+        };
+        run = Actor.start(TARGET_CLP_ACTOR_ID, {
+            ...temp,
+            datasetId: dataset.id,
+            keyValueStoreId: keyValueStore.id,
+        }, targetActorRunOptions);
     }
 
     if (run !== null) {
@@ -129,6 +128,5 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
         const runClient = apifyClient.run(runResult.id);
         return runClient.waitForFinish();
     }
-    log.info('Invalid placement type', { placementType: placement.type });
-    // throw new Error('Invalid placement type. Should be either lightbox or clp.');
+    throw new Error('Invalid placement type. Should be either lightbox or clp.');
 }
