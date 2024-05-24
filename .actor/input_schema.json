@@ -19,7 +19,7 @@
             "title": "Parallel Actor runs count",
             "type": "integer",
             "description": "Number of parallel runs of the Actor.",
-            "default": 1
+            "default": 4
         },
         "userID": {
             "title": "userID",

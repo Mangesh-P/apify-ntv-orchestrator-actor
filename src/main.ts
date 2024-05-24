@@ -8,7 +8,7 @@ import { IInput, ILookupPlacement, IState, ITargetActorRunOptions } from './inte
 await Actor.init();
 
 const {
-    parallelRunsCount = 1,
+    parallelRunsCount,
     targetActorRunOptions = {} as ITargetActorRunOptions,
     adID,
     isBulkIFUScreenshots = false,
@@ -78,9 +78,6 @@ async function loopActorRun(placements: ILookupPlacement[], isBulk: boolean) {
         const taskIndex = await Promise.race(state.runningTasks.map((task, index) => task.then(() => index)));
         state.runningTasks[taskIndex].then(async (taskInfo: any) => {
             log.info(`Task finished with ID :`, { id: taskInfo.id });
-            await dataset.getData().then((data) => {
-                log.info('Dataset data:', { data });
-            });
         });
         state.runningTasks.splice(taskIndex, 1);
 
