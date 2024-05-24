@@ -3,8 +3,8 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
-        "doZip": {
-            "title": "doZip",
+        "zipIt": {
+            "title": "zipIt",
             "type": "boolean",
             "description": "Whether to zip the output files",
             "default": false

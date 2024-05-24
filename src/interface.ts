@@ -10,7 +10,7 @@ export interface IInput {
     userID: number;
     placementsInfo: ILookupPlacement[];
     maxFileInZip: number;
-    doZip: boolean;
+    zipIt: boolean;
 }
 
 export interface IState {
