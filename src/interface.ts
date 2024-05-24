@@ -10,6 +10,7 @@ export interface IInput {
     userID: number;
     placementsInfo: ILookupPlacement[];
     maxFileInZip: number;
+    doZip: boolean;
 }
 
 export interface IState {
@@ -22,4 +23,5 @@ export interface ILookupPlacement {
     placementID: number;
     url: string;
     adID: string;
+    type: 'lightbox' | 'clp';
 }

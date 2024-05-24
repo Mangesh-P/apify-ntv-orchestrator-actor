@@ -3,6 +3,12 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
+        "doZip": {
+            "title": "doZip",
+            "type": "boolean",
+            "description": "Whether to zip the output files",
+            "default": false
+        },
         "maxFileInZip": {
             "title": "Max no of files in a zip.",
             "type": "integer",

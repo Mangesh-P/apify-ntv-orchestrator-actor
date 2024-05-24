@@ -1,6 +1,6 @@
-import { Actor, log } from 'apify';
+import { Actor, ActorRun, log } from 'apify';
 import lookupPlacementJson from './lookup-placements.json' assert { type: 'json' };
-import { TARGET_ACTOR_ID } from './constants.js';
+import { TARGET_CLP_ACTOR_ID, TARGET_LIGHTBOX_ACTOR_ID } from './constants.js';
 import { getZip } from './zip.util.js';
 import { saveError } from './utils.js';
 import { IInput, ILookupPlacement, IState, ITargetActorRunOptions } from './interface.js';
@@ -15,24 +15,23 @@ const {
     userID,
     placementsInfo = [] as ILookupPlacement[],
     maxFileInZip = 0,
+    doZip = false,
 } = await Actor.getInput<IInput>() ?? {} as IInput;
 const { apifyClient } = Actor;
 
 // Get the current run request queue and dataset, we use the default ones.
 const dataset = await Actor.openDataset();
 const keyValueStore = await Actor.openKeyValueStore();
-// const keyValueStore = await Actor.openKeyValueStore('pVLxnQctaJ2UyZzUG', { forceCloud: true });
-// const keyValueStore = await Actor.openKeyValueStore('wUTlFacVawnCw1Jd7', { forceCloud: true });
-log.info(`Store ID:`, { storeId: keyValueStore.id });
-
+log.info('Store ID:', { storeId: keyValueStore.id });
 log.info('Starting run', { parallelRunsCount, isBulkIFUScreenshots, placementsInfoCount: placementsInfo.length });
 
-// Spawn parallel runs and store their IDs in the state or continue if they are already running.
 const state = await Actor.useState<IState>('actor-state', { parallelRunIds: [], placementsInfo: [], runningTasks: [] });
 
 try {
     await startToFinish();
-    await getZip(keyValueStore, maxFileInZip);
+    if (doZip) {
+        await getZip(keyValueStore, maxFileInZip);
+    }
 } catch (error: any) {
     await saveError(error);
     await Actor.fail('Execution failed!');
@@ -77,8 +76,11 @@ async function loopActorRun(placements: ILookupPlacement[], isBulk: boolean) {
 
     while (state.runningTasks.length > 0) {
         const taskIndex = await Promise.race(state.runningTasks.map((task, index) => task.then(() => index)));
-        state.runningTasks[taskIndex].then((taskInfo: any) => {
+        state.runningTasks[taskIndex].then(async (taskInfo: any) => {
             log.info(`Task finished with ID :`, { id: taskInfo.id });
+            await dataset.getData().then((data) => {
+                log.info('Dataset data:', { data });
+            });
         });
         state.runningTasks.splice(taskIndex, 1);
 
@@ -89,25 +91,45 @@ async function loopActorRun(placements: ILookupPlacement[], isBulk: boolean) {
     }
 }
 
-async function startActorRun(placement: ILookupPlacement, isIFU: boolean) {
-    const temp = {
-        isIFU,
-        userID,
-        placementInfo: {
-            ...placement,
-        },
-    };
+async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promise<ActorRun> {
+    let run: Promise<ActorRun> | null = null;
 
-    const run = await Actor.start(TARGET_ACTOR_ID, {
-        ...temp,
-        datasetId: dataset.id,
-        keyValueStoreId: keyValueStore.id,
-    }, targetActorRunOptions);
+    if (placement.type === 'lightbox') {
+        const temp = {
+            isIFU,
+            userID,
+            placementInfo: {
+                ...placement,
+            },
+        };
+        run = Actor.start(TARGET_LIGHTBOX_ACTOR_ID, {
+            ...temp,
+            datasetId: dataset.id,
+            keyValueStoreId: keyValueStore.id,
+        }, targetActorRunOptions);
+    } else if (placement.type === 'clp') {
+        const temp = {
+            userID,
+            placementInfo: {
+                ...placement,
+            },
+        };
+        run = Actor.start(TARGET_CLP_ACTOR_ID, {
+            ...temp,
+            datasetId: dataset.id,
+            keyValueStoreId: keyValueStore.id,
+        }, targetActorRunOptions);
+    }
 
-    log.info(`Started parallel run with ID: ${run.id}`, { build: run.options.build });
+    if (run !== null) {
+        const runResult = await run;
 
-    state.parallelRunIds.push(run.id);
+        log.info(`Started parallel run with ID: ${runResult.id}`, { build: runResult.options.build });
 
-    const runClient = apifyClient.run(run.id);
-    return runClient.waitForFinish();
+        state.parallelRunIds.push(runResult.id);
+
+        const runClient = apifyClient.run(runResult.id);
+        return runClient.waitForFinish();
+    }
+    throw new Error('Run is null');
 }

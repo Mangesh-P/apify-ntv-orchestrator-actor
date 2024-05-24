@@ -72,10 +72,10 @@ async function createZipOutput(output: any, archiveIndex: number = 0) {
             contentType: `application / zip`,
         });
 
-        const screenshotUrl = `https://api.apify.com/v2/key-value-stores/${ACTOR_DEFAULT_KEY_VALUE_STORE_ID}/records/${outputFilename}?disableRedirect=true`;
-        log.info(`Screenshot saved: ${screenshotUrl}`);
+        const zipUrl = `https://api.apify.com/v2/key-value-stores/${ACTOR_DEFAULT_KEY_VALUE_STORE_ID}/records/${outputFilename}?disableRedirect=true`;
+        log.info(`Screenshot saved: ${zipUrl}`);
 
-        await Actor.pushData({ screenshotUrl });
+        await Actor.pushData({ zipUrl });
         log.info('screenshot zip url saved in default dataset');
     } else {
         throw new Error('Zip file size is less than 0 MB');
