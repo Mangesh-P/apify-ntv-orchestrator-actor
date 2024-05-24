@@ -10,7 +10,7 @@
 		"apify": "^3.1.10",
 		"archiver": "^7.0.1",
 		"crawlee": "^3.5.4",
-		"playwright": "*"
+		"playwright": "1.44.1"
 	},
 	"devDependencies": {
 		"@apify/eslint-config-ts": "^0.3.0",
