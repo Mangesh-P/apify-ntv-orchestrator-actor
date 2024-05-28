@@ -49,18 +49,19 @@ async function startToFinish() {
         }
     });
 
+    let finalPlacements: ILookupPlacement[] = placementsInfo;
     if (isBulkIFUScreenshots) {
-        const finalPlacements = lookupPlacementJson.map((x) => {
+        finalPlacements = lookupPlacementJson.map((x) => {
             return {
                 ...x,
                 adID,
             } as ILookupPlacement;
-        }) as ILookupPlacement[];
-
+        });
         await loopActorRun(finalPlacements, true);
-    } else {
-        await loopActorRun(placementsInfo, false);
     }
+
+    await loopActorRun(finalPlacements, false);
+
     log.info('All parallel runs finished');
 }
 
@@ -88,7 +89,7 @@ async function loopActorRun(placements: ILookupPlacement[], isBulk: boolean) {
     }
 }
 
-async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promise<ActorRun> {
+async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promise<ActorRun | undefined> {
     let run: Promise<ActorRun> | null = null;
 
     if (placement.type === 'lightbox') {
@@ -128,5 +129,6 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
         const runClient = apifyClient.run(runResult.id);
         return runClient.waitForFinish();
     }
-    throw new Error('Invalid placement type. Should be either lightbox or clp.');
+    log.error('Invalid placement type', { placement });
+    return undefined;
 }
