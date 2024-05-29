@@ -57,9 +57,9 @@ async function startToFinish() {
             } as ILookupPlacement;
         });
         await loopActorRun(finalPlacements, true);
+    } else {
+        await loopActorRun(finalPlacements, false);
     }
-
-    await loopActorRun(finalPlacements, false);
 
     log.info('All parallel runs finished');
 }
