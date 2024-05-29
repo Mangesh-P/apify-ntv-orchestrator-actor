@@ -104,6 +104,7 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
             datasetId: dataset.id,
             keyValueStoreId: keyValueStore.id,
         }, targetActorRunOptions);
+        log.info('Starting lightbox actor run', { placement });
     } else if (placement.type === 'clp') {
         const temp = {
             isCLP: false, // This is when the page is referrer and not the link to clp itself
@@ -117,6 +118,7 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
             datasetId: dataset.id,
             keyValueStoreId: keyValueStore.id,
         }, targetActorRunOptions);
+        log.info('Starting clp actor run', { placement });
     }
 
     if (run !== null) {
