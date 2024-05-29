@@ -30,7 +30,7 @@
         "targetActorRunOptions": {
             "title": "Actor Run Options",
             "type": "object",
-            "description": "Options for the Actor run",
+            "description": "Options for the Actor run { build: 'latest'/'develop'/'release' , token: 'token' }",
             "editor": "json",
             "prefill": {}
         },
@@ -38,7 +38,7 @@
             "title": "placementsInfo",
             "type": "array",
             "editor": "json",
-            "description": "Information about the placements"
+            "description": "Information about the placements {placementID ,url,toutSelector, type: 'lightbox'/'clp' }"
         },
         "isBulkIFUScreenshots": {
             "title": "isBulkIFUScreenshots",
