@@ -1,7 +1,13 @@
 [
     {
-        "placementID": 1237430,
-        "url": "https://test-sites.internal.nativo.net/testing/directory.html",
+        "placementID": 1039515,
+        "url": "https://test-sites.internal.nativo.net/testing/?ntv_tm=tout&ntv_pl=1039515&ntv_opt=27884",
+        "toutSelector": "",
+        "type": "clp"
+    },
+    {
+        "placementID": 1290996,
+        "url": "https://stockcharts.com/freecharts/?ntv_a=NSEJAAAAAA9LITA&prx_ro=s",
         "toutSelector": "",
         "type": "lightbox"
     }
