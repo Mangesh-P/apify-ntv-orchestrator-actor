@@ -14,8 +14,7 @@ const {
     isBulkIFUScreenshots = false,
     userID,
     placementsInfo = [] as ILookupPlacement[],
-    maxFileInZip = 0,
-    zipIt = false,
+    maxFileInZip,
 } = await Actor.getInput<IInput>() ?? {} as IInput;
 const { apifyClient } = Actor;
 
@@ -29,7 +28,7 @@ const state = await Actor.useState<IState>('actor-state', { parallelRunIds: [], 
 
 try {
     await startToFinish();
-    if (zipIt) {
+    if (maxFileInZip > 0) {
         await getZip(keyValueStore, maxFileInZip);
     }
 } catch (error: any) {

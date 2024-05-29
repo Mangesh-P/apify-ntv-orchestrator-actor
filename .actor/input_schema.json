@@ -3,16 +3,10 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
-        "zipIt": {
-            "title": "zipIt",
-            "type": "boolean",
-            "description": "Whether to zip the output files",
-            "default": false
-        },
         "maxFileInZip": {
             "title": "Max no of files in a zip.",
             "type": "integer",
-            "description": "Max no of files in a zip. There can be multiple zips.",
+            "description": "0 means no zipping. A number will files in each zip.there can be multiple zips.",
             "default": 0
         },
         "parallelRunsCount": {
