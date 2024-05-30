@@ -107,7 +107,7 @@ async function startActorRun(placement: ILookupPlacement, isIFU: boolean): Promi
         log.info('Starting lightbox actor run', { placement });
     } else if (placement.type === 'clp') {
         const temp = {
-            isCLP: false, // This is when the page is referrer and not the link to clp itself
+            isCLP: !isBulkIFUScreenshots, // This is when the page is referrer and not the link to clp itself.
             userID,
             placementInfo: {
                 ...placement,
