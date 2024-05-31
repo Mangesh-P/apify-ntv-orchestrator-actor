@@ -18,8 +18,6 @@ const {
 } = await Actor.getInput<IInput>() ?? {} as IInput;
 const { apifyClient } = Actor;
 
-const { BUILD_NUMBER } = process.env;
-
 // Get the current run request queue and dataset, we use the default ones.
 const dataset = await Actor.openDataset();
 const keyValueStore = await Actor.openKeyValueStore();
@@ -29,7 +27,7 @@ log.info('Starting run', { parallelRunsCount, isBulkIFUScreenshots, placementsIn
 const state = await Actor.useState<IState>('actor-state', { parallelRunIds: [], placementsInfo: [], runningTasks: [] });
 
 try {
-    log.info(BUILD_NUMBER || 'No build number found');
+    log.info('targetActorRunOptions', targetActorRunOptions);
 
     await startToFinish();
     if (maxFileInZip > 0) {
